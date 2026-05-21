@@ -52,17 +52,17 @@ function SidebarSelection({
       type="button"
       onClick={onClick}
       className={[
-        "w-full px-5 py-4 text-left transition-colors",
-        isActive
-          ? "bg-[#1a1a1a] text-white"
-          : "bg-[#f1f1f1] text-[#1a1a1a] hover:bg-[#e5e5e5]",
-      ].join(" ")}
+        "skinstric-sidebar-card",
+        isActive ? "skinstric-sidebar-card-active" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
-      <p className="text-[13px] font-semibold uppercase tracking-[-0.03em]">
+      <p className="text-[13px] font-semibold uppercase leading-none tracking-[-0.03em]">
         {value ? formatDemographicLabel(value) : "Not selected"}
       </p>
 
-      <p className="mt-7 text-[12px] font-semibold uppercase tracking-[-0.02em] opacity-80">
+      <p className="mt-8 text-[12px] font-semibold uppercase leading-none tracking-[-0.02em] opacity-90">
         {CATEGORY_DISPLAY[category]}
       </p>
     </button>
@@ -73,8 +73,8 @@ function ConfidenceCircle({ percentage }: { percentage: string }) {
   const cleanPercentage = percentage.replace("%", "");
 
   return (
-    <div className="relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-80 md:w-80">
-      <p className="text-[48px] font-normal leading-none tracking-[-0.07em] md:text-[58px]">
+    <div className="relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-77.5 md:w-77.5">
+      <p className="text-[46px] font-normal leading-none tracking-[-0.07em] md:text-[54px]">
         {cleanPercentage}
         <span className="align-super text-[20px] tracking-normal md:text-[24px]">
           %
@@ -98,9 +98,11 @@ function ScoreRow({
       type="button"
       onClick={onClick}
       className={[
-        "grid w-full grid-cols-[1fr_auto] items-center px-4 py-3 text-left transition-colors",
-        isSelected ? "bg-[#1a1a1a] text-white" : "hover:bg-[#e1e1e1]",
-      ].join(" ")}
+        "skinstric-score-row",
+        isSelected ? "skinstric-score-row-active" : "",
+      ]
+        .filter(Boolean)
+        .join(" ")}
     >
       <span className="flex items-center gap-3 text-[13px] font-normal tracking-[-0.02em]">
         <span className="text-[12px]">◇</span>
@@ -128,10 +130,10 @@ function ActionButton({
       type="button"
       onClick={onClick}
       className={[
-        "min-w-24 border px-5 py-3 text-[12px] font-semibold uppercase leading-none tracking-[-0.02em] transition-opacity hover:opacity-70",
+        "skinstric-action-button",
         variant === "dark"
-          ? "border-[#1a1a1a] bg-[#1a1a1a] text-white"
-          : "border-[#1a1a1a] bg-transparent text-[#1a1a1a]",
+          ? "skinstric-action-button-dark"
+          : "skinstric-action-button-light",
       ].join(" ")}
     >
       {label}
@@ -254,22 +256,23 @@ export default function DemographicsPage() {
   return (
     <PageShell
       sectionLabel="ANALYSIS"
-      contentClassName="min-h-screen px-7 pt-24 md:px-8"
+      showEnterCode={false}
+      contentClassName="min-h-screen px-6 pt-[88px] md:px-8"
     >
       <section className="min-h-[calc(100vh-6rem)] pb-32">
-        <div className="mb-16">
-          <p className="skinstric-label">A.I. ANALYSIS</p>
+        <div className="mb-14.5">
+          <p className="skinstric-label">A. I. ANALYSIS</p>
 
-          <h1 className="mt-3 text-[clamp(54px,7vw,86px)] font-normal uppercase leading-[0.86] tracking-[-0.075em]">
+          <h1 className="mt-3 text-[clamp(54px,5.8vw,72px)] font-normal uppercase leading-[0.9] tracking-[-0.075em]">
             Demographics
           </h1>
 
-          <p className="mt-5 text-[13px] font-semibold uppercase tracking-[-0.02em]">
+          <p className="mt-4 text-[13px] font-semibold uppercase tracking-[-0.02em]">
             Predicted race &amp; age
           </p>
         </div>
 
-        <div className="grid gap-4 lg:grid-cols-[190px_1fr_360px]">
+        <div className="grid w-full gap-3 lg:grid-cols-[180px_minmax(0,1fr)_360px]">
           <aside className="space-y-2">
             {DEMOGRAPHIC_CATEGORIES.map((category) => (
               <SidebarSelection
@@ -282,18 +285,18 @@ export default function DemographicsPage() {
             ))}
           </aside>
 
-          <main className="min-h-97.5 border-t-2 border-[#1a1a1a] bg-[#f1f1f1] px-5 py-6 md:min-h-120">
-            <h2 className="text-[32px] font-normal leading-none tracking-[-0.06em] md:text-[42px]">
+          <main className="min-h-97.5 border-t-2 border-[#1a1a1a] bg-[#f3f3f3] px-5 py-6 md:min-h-120">
+            <h2 className="text-[32px] font-normal leading-none tracking-[-0.07em] md:text-[40px]">
               {formatDemographicLabel(selectedScore.label)}
               {selectedCategory === "age" ? " y.o." : ""}
             </h2>
 
-            <div className="flex min-h-75 items-center justify-center md:min-h-95">
+            <div className="flex min-h-75 items-center justify-center md:min-h-92.5">
               <ConfidenceCircle percentage={selectedScore.percentage} />
             </div>
           </main>
 
-          <aside className="border-t-2 border-[#1a1a1a] bg-[#f1f1f1]">
+          <aside className="border-t-2 border-[#1a1a1a] bg-[#f3f3f3]">
             <div className="grid grid-cols-[1fr_auto] px-4 py-4">
               <p className="text-[14px] font-normal uppercase tracking-[-0.03em]">
                 {CATEGORY_DISPLAY[selectedCategory] === "SEX"
@@ -321,7 +324,7 @@ export default function DemographicsPage() {
           </aside>
         </div>
 
-        <p className="mt-10 text-center text-[12px] font-normal tracking-[-0.02em] text-[#9a9a9a]">
+        <p className="mt-9 text-center text-[12px] font-normal tracking-[-0.02em] text-[#9a9a9a]">
           If A.I. estimate is wrong, select the correct one.
         </p>
       </section>

@@ -226,6 +226,75 @@ a {
   text-transform: uppercase;
 }
 
+.skinstric-sidebar-card {
+  height: 92px;
+  width: 100%;
+  padding: 16px;
+  background: #eeeeee;
+  color: #1a1a1a;
+  text-align: left;
+  transition:
+    background 200ms ease,
+    color 200ms ease;
+}
+
+.skinstric-sidebar-card:hover {
+  background: #e2e2e2;
+}
+
+.skinstric-sidebar-card-active {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.skinstric-score-row {
+  display: grid;
+  width: 100%;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  padding: 13px 16px;
+  text-align: left;
+  color: #1a1a1a;
+  transition:
+    background 200ms ease,
+    color 200ms ease;
+}
+
+.skinstric-score-row:hover {
+  background: #e1e1e1;
+}
+
+.skinstric-score-row-active {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
+.skinstric-action-button {
+  min-width: 96px;
+  border: 1px solid #1a1a1a;
+  padding: 12px 20px;
+  font-size: 12px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: opacity 200ms ease;
+}
+
+.skinstric-action-button:hover {
+  opacity: 0.7;
+}
+
+.skinstric-action-button-light {
+  background: transparent;
+  color: #1a1a1a;
+}
+
+.skinstric-action-button-dark {
+  background: #1a1a1a;
+  color: #ffffff;
+}
+
 @media (max-width: 768px) {
   .skinstric-testing-input {
     width: min(86vw, 420px);
