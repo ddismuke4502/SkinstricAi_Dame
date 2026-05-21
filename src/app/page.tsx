@@ -1,65 +1,96 @@
-import Image from "next/image";
+import BottomNav from "@/components/layout/BottomNav";
+import PageShell from "@/components/layout/PageShell";
+import DiamondButton from "@/components/ui/DiamondButton";
+import { ROUTES } from "@/constants/routes";
+
+function SideDiamondGroup({
+  side,
+  label,
+  href,
+}: {
+  side: "left" | "right";
+  label: string;
+  href: string;
+}) {
+  const isLeft = side === "left";
+
+  return (
+    <div
+      className={[
+        "absolute top-1/2 hidden -translate-y-1/2 items-center xl:flex",
+        isLeft ? "-left-65" : "-right-65",
+      ].join(" ")}
+    >
+      <div className="relative grid h-130 w-130 place-items-center">
+        <span className="diamond-frame rotate-slow w-130" />
+        <span className="diamond-frame rotate-medium w-110" />
+        <span className="diamond-frame rotate-fast w-90" />
+
+        <div
+          className={[
+            "absolute top-1/2 z-10 -translate-y-1/2",
+            isLeft ? "right-18" : "left-18",
+          ].join(" ")}
+        >
+          <DiamondButton
+            label={label}
+            href={href}
+            direction={isLeft ? "left" : "right"}
+          />
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default function Home() {
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
+    <PageShell contentClassName="flex min-h-screen items-center justify-center px-6 pt-0">
+      <section className="relative flex min-h-screen w-full items-center justify-center">
+        <SideDiamondGroup
+          side="left"
+          label="DISCOVER A.I."
+          href={ROUTES.testing}
         />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
+
+        <div className="relative z-20 flex flex-col items-center text-center">
+          <h1 className="skinstric-hero-title max-w-225">
+            Sophisticated
+            <br />
+            skincare
           </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
+
+          <div className="mt-16 flex w-full items-center justify-between gap-8 xl:hidden">
+            <DiamondButton
+              label="DISCOVER A.I."
+              href={ROUTES.testing}
+              direction="left"
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+
+            <DiamondButton
+              label="TAKE TEST"
+              href={ROUTES.testing}
+              direction="right"
+            />
+          </div>
         </div>
-      </main>
-    </div>
+
+        <SideDiamondGroup
+          side="right"
+          label="TAKE TEST"
+          href={ROUTES.testing}
+        />
+
+        <p className="skinstric-body-copy absolute bottom-8 left-0 hidden max-w-82.5 text-left md:block">
+          SKINSTRIC DEVELOPED AN A.I. THAT CREATES
+          <br />
+          A HIGHLY-PERSONALISED ROUTINE TAILORED TO
+          <br />
+          WHAT YOUR SKIN NEEDS.
+        </p>
+      </section>
+
+      <BottomNav showBack={false} showProceed={false} />
+    </PageShell>
   );
 }
