@@ -329,7 +329,7 @@ export default function CameraPage() {
             </div>
           </div>
 
-          <div className="absolute left-[52%] top-1/2 z-30 w-77.5 -translate-y-1/2 bg-[#1a1a1a] text-white shadow-xl">
+          <div className="skinstric-permission-modal">
             <p className="border-b border-white/30 px-5 py-5 text-[12px] font-semibold uppercase tracking-[-0.02em]">
               ALLOW A.I. TO ACCESS YOUR CAMERA
             </p>

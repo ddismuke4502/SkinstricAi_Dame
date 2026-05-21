@@ -37,7 +37,7 @@ export function BottomNav({
         .filter(Boolean)
         .join(" ")}
     >
-      <div className="pointer-events-auto">
+      <div className="pointer-events-auto skinstric-fade-in-up">
         {showBack && (
           <DiamondButton
             label={backLabel}
@@ -49,7 +49,7 @@ export function BottomNav({
         )}
       </div>
 
-      <div className="pointer-events-auto">
+      <div className="pointer-events-auto skinstric-fade-in-up">
         {showProceed && (
           <DiamondButton
             label={proceedLabel}

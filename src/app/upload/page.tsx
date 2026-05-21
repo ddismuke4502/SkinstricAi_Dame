@@ -5,7 +5,6 @@ import { ChangeEvent, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/layout/BottomNav";
 import PageShell from "@/components/layout/PageShell";
-import DiamondButton from "@/components/ui/DiamondButton";
 import RotatingDiamond from "@/components/ui/RotatingDiamond";
 import { ROUTES } from "@/constants/routes";
 import { submitPhaseTwoImage } from "@/lib/api";
@@ -158,12 +157,6 @@ export default function UploadPage() {
                     {errorMessage}
                   </p>
                 )}
-
-                <DiamondButton
-                  label="ANALYZE"
-                  onClick={handleAnalyzeImage}
-                  direction="right"
-                />
               </div>
             </RotatingDiamond>
           </div>
@@ -177,7 +170,13 @@ export default function UploadPage() {
           onChange={handleFileChange}
         />
 
-        <BottomNav backHref={ROUTES.select} showBack showProceed={false} />
+        <BottomNav
+          backHref={ROUTES.select}
+          showBack
+          showProceed
+          proceedLabel="ANALYZE"
+          onProceed={handleAnalyzeImage}
+        />
       </PageShell>
     );
   }
@@ -217,7 +216,7 @@ export default function UploadPage() {
             </div>
           </div>
 
-          <div className="absolute left-[52%] top-1/2 z-30 w-77.5 -translate-y-1/2 bg-[#1a1a1a] text-white shadow-xl">
+          <div className="skinstric-permission-modal">
             <p className="border-b border-white/30 px-5 py-5 text-[12px] font-semibold uppercase tracking-[-0.02em]">
               ALLOW A.I. TO ACCESS YOUR GALLERY
             </p>

@@ -263,7 +263,7 @@ export default function DemographicsPage() {
         <div className="mb-14.5">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 
-          <h1 className="mt-3 text-[clamp(54px,5.8vw,72px)] font-normal uppercase leading-[0.9] tracking-[-0.075em]">
+          <h1 className="skinstric-mobile-page-title mt-3 font-normal uppercase md:text-[clamp(54px,5.8vw,72px)]">
             Demographics
           </h1>
 
