@@ -39,7 +39,7 @@ function AnalysisTile({ label, href, position }: AnalysisTileProps) {
 
 export default function AnalysisPage() {
   return (
-    <PageShell contentClassName="min-h-screen px-7 pt-24 md:px-8">
+    <PageShell sectionLabel="ANALYSIS" contentClassName="min-h-screen px-7 pt-24 md:px-8">
       <section className="relative min-h-[calc(100vh-6rem)]">
         <div className="absolute left-0 top-0">
           <p className="skinstric-label">A.I. ANALYSIS</p>

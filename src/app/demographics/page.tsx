@@ -179,7 +179,7 @@ export default function DemographicsPage() {
   }
 
   return (
-    <PageShell contentClassName="min-h-screen px-7 pt-24 md:px-8">
+    <PageShell sectionLabel="ANALYSIS" contentClassName="min-h-screen px-7 pt-24 md:px-8">
       <section className="min-h-[calc(100vh-6rem)] pb-28">
         <div className="mb-10">
           <p className="skinstric-label">A.I. ANALYSIS</p>

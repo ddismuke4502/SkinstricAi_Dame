@@ -7,6 +7,8 @@ type PageShellProps = {
   contentClassName?: string;
   showIntro?: boolean;
   showEnterCode?: boolean;
+  sectionLabel?: string;
+  headerTone?: "dark" | "light";
 };
 
 export function PageShell({
@@ -15,10 +17,17 @@ export function PageShell({
   contentClassName = "",
   showIntro = true,
   showEnterCode = true,
+  sectionLabel = "INTRO",
+  headerTone = "dark",
 }: PageShellProps) {
   return (
     <div className={["skinstric-page relative overflow-hidden", className].join(" ")}>
-      <AppHeader showIntro={showIntro} showEnterCode={showEnterCode} />
+      <AppHeader
+        showIntro={showIntro}
+        showEnterCode={showEnterCode}
+        sectionLabel={sectionLabel}
+        tone={headerTone}
+      />
 
       <main
         className={[
