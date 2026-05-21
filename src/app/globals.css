@@ -211,6 +211,21 @@ a {
   opacity: 0.5;
 }
 
+.skinstric-subhead {
+  font-family:
+    "Roobert TRIAL",
+    "Roobert",
+    "Helvetica Neue",
+    Helvetica,
+    Arial,
+    sans-serif;
+  font-size: 16px;
+  font-weight: 600;
+  line-height: 24px;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+}
+
 @media (max-width: 768px) {
   .skinstric-testing-input {
     width: min(86vw, 420px);
