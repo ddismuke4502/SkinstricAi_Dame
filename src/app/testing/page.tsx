@@ -135,7 +135,7 @@ export default function TestingPage() {
           onSubmit={handleSubmit}
           className="flex min-h-[calc(100vh-6rem)] items-center justify-center"
         >
-          <RotatingDiamond size="lg">
+          <RotatingDiamond size="md">
             <label
               htmlFor="testing-input"
               className="skinstric-muted-label mb-4"
@@ -156,7 +156,8 @@ export default function TestingPage() {
               placeholder={
                 step === "name" ? "Introduce Yourself" : "Where are you from?"
               }
-              className="w-[min(80vw,560px)] border-b border-[#1a1a1a] pb-1 text-center text-[clamp(36px,4.5vw,60px)] font-normal leading-none tracking-[-0.075em] text-[#1a1a1a] placeholder:text-[#1a1a1a] disabled:opacity-50"
+              className="skinstric-testing-input" 
+              spellCheck={false}
             />
 
             <p
