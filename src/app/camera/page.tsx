@@ -4,16 +4,47 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/layout/BottomNav";
 import PageShell from "@/components/layout/PageShell";
-import DiamondButton from "@/components/ui/DiamondButton";
 import RotatingDiamond from "@/components/ui/RotatingDiamond";
+import { CameraIcon } from "@/components/ui/SkinstricIcons";
 import { ROUTES } from "@/constants/routes";
 import { submitPhaseTwoImage } from "@/lib/api";
 import { getInitialActualSelections } from "@/lib/demographics";
 import { canvasToBase64 } from "@/lib/image";
-import {
-  saveActualSelections,
-  saveDemographicsData,
-} from "@/lib/storage";
+import { saveActualSelections, saveDemographicsData } from "@/lib/storage";
+
+type CameraStage =
+  | "permission"
+  | "settingUp"
+  | "live"
+  | "captured"
+  | "analyzing";
+
+function CameraGuidanceCopy({ tone = "dark" }: { tone?: "dark" | "light" }) {
+  const textColor = tone === "light" ? "text-white" : "text-[#1a1a1a]";
+  const mutedColor = tone === "light" ? "text-white/90" : "text-[#1a1a1a]";
+
+  return (
+    <div
+      className={[
+        "mt-18 text-center text-[11px] font-semibold uppercase leading-relaxed tracking-[-0.02em]",
+        textColor,
+      ].join(" ")}
+    >
+      <p>TO GET BETTER RESULTS MAKE SURE TO HAVE</p>
+
+      <div
+        className={[
+          "mt-4 flex flex-wrap items-center justify-center gap-x-7 gap-y-2",
+          mutedColor,
+        ].join(" ")}
+      >
+        <span>◇ NEUTRAL EXPRESSION</span>
+        <span>◇ FRONTAL POSE</span>
+        <span>◇ ADEQUATE LIGHTING</span>
+      </div>
+    </div>
+  );
+}
 
 export default function CameraPage() {
   const router = useRouter();
@@ -22,53 +53,77 @@ export default function CameraPage() {
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
 
-  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [stage, setStage] = useState<CameraStage>("permission");
   const [capturedPreview, setCapturedPreview] = useState("");
   const [capturedBase64, setCapturedBase64] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
-  const [isAnalyzing, setIsAnalyzing] = useState(false);
 
   function stopCamera() {
     streamRef.current?.getTracks().forEach((track) => track.stop());
     streamRef.current = null;
-    setIsCameraActive(false);
   }
 
   async function startCamera() {
     try {
       setErrorMessage("");
+      setCapturedPreview("");
+      setCapturedBase64("");
+      setStage("settingUp");
+
+      const setupStartedAt = Date.now();
 
       if (!navigator.mediaDevices?.getUserMedia) {
         setErrorMessage("Camera access is not supported in this browser.");
+        setStage("permission");
         return;
       }
 
       const stream = await navigator.mediaDevices.getUserMedia({
         video: {
           facingMode: "user",
-          width: { ideal: 1280 },
-          height: { ideal: 720 },
+          width: { ideal: 1920 },
+          height: { ideal: 1080 },
         },
         audio: false,
       });
 
       streamRef.current = stream;
 
-      if (videoRef.current) {
-        videoRef.current.srcObject = stream;
-        await videoRef.current.play();
-      }
+      const elapsedSetupTime = Date.now() - setupStartedAt;
+      const minimumSetupTime = 900;
+      const remainingSetupTime = Math.max(
+        0,
+        minimumSetupTime - elapsedSetupTime,
+      );
 
-      setCapturedPreview("");
-      setCapturedBase64("");
-      setIsCameraActive(true);
+      await new Promise((resolve) => {
+        window.setTimeout(resolve, remainingSetupTime);
+      });
+
+      setStage("live");
     } catch {
       setErrorMessage(
-        "Unable to access your camera. Please allow camera permissions and try again."
+        "Unable to access your camera. Please allow camera permissions and try again.",
       );
-      setIsCameraActive(false);
+      setStage("permission");
     }
   }
+
+  useEffect(() => {
+    if (stage !== "live") return;
+
+    const video = videoRef.current;
+    const stream = streamRef.current;
+
+    if (!video || !stream) return;
+
+    video.srcObject = stream;
+
+    void video.play().catch(() => {
+      setErrorMessage("Unable to start the camera preview. Please try again.");
+      setStage("permission");
+    });
+  }, [stage]);
 
   function captureSelfie() {
     const video = videoRef.current;
@@ -79,7 +134,7 @@ export default function CameraPage() {
       return;
     }
 
-    const width = video.videoWidth || 720;
+    const width = video.videoWidth || 1280;
     const height = video.videoHeight || 720;
 
     canvas.width = width;
@@ -101,7 +156,7 @@ export default function CameraPage() {
 
     setCapturedPreview(result.dataUrl);
     setCapturedBase64(result.base64);
-    setErrorMessage("");
+    setStage("captured");
     stopCamera();
   }
 
@@ -112,7 +167,7 @@ export default function CameraPage() {
     }
 
     try {
-      setIsAnalyzing(true);
+      setStage("analyzing");
       setErrorMessage("");
 
       const response = await submitPhaseTwoImage({
@@ -130,9 +185,25 @@ export default function CameraPage() {
           : "Something went wrong while analyzing your selfie.";
 
       setErrorMessage(message);
-    } finally {
-      setIsAnalyzing(false);
+      setStage("captured");
     }
+  }
+
+  function handleBack() {
+    if (stage === "live") {
+      stopCamera();
+      setStage("permission");
+      return;
+    }
+
+    if (stage === "captured") {
+      setCapturedPreview("");
+      setCapturedBase64("");
+      setStage("permission");
+      return;
+    }
+
+    router.push(ROUTES.select);
   }
 
   useEffect(() => {
@@ -140,6 +211,95 @@ export default function CameraPage() {
       stopCamera();
     };
   }, []);
+
+  if (stage === "settingUp" || stage === "analyzing") {
+    return (
+      <PageShell contentClassName="flex min-h-screen items-center justify-center px-7 pt-0 md:px-8">
+        <div className="flex flex-col items-center">
+          <RotatingDiamond size="md">
+            <div className="mb-6 grid h-24 w-24 place-items-center rounded-full border border-[#1a1a1a]">
+              <CameraIcon className="h-16 w-16 text-[#1a1a1a]" />
+            </div>
+
+            <p className="text-[13px] font-semibold uppercase tracking-[-0.02em]">
+              {stage === "settingUp"
+                ? "SETTING UP CAMERA ..."
+                : "PREPARING YOUR ANALYSIS ..."}
+            </p>
+          </RotatingDiamond>
+
+          <CameraGuidanceCopy />
+        </div>
+      </PageShell>
+    );
+  }
+
+  if (stage === "live" || stage === "captured") {
+    return (
+      <div className="relative min-h-screen overflow-hidden bg-[#d6d8d5] text-white">
+        {stage === "live" ? (
+          <video
+            ref={videoRef}
+            muted
+            playsInline
+            className="absolute inset-0 h-full w-full scale-x-[-1] object-cover"
+          />
+        ) : (
+          <div
+            className="absolute inset-0 h-full w-full bg-cover bg-center"
+            style={{ backgroundImage: `url(${capturedPreview})` }}
+          />
+        )}
+
+        <div className="absolute inset-0 bg-black/10" />
+
+        <header className="absolute left-0 top-0 z-20 flex w-full items-center justify-between px-7 py-5 md:px-8">
+          <div className="flex items-center gap-4">
+            <span className="text-[12px] font-semibold uppercase tracking-[-0.02em]">
+              SKINSTRIC
+            </span>
+            <span className="hidden text-[12px] font-semibold uppercase tracking-[-0.02em] text-white/70 md:block">
+              [ ANALYSIS ]
+            </span>
+          </div>
+        </header>
+
+        {stage === "captured" && (
+          <p className="absolute left-1/2 top-[23%] z-20 -translate-x-1/2 text-[12px] font-semibold uppercase tracking-[-0.02em]">
+            GREAT SHOT!
+          </p>
+        )}
+
+        {stage === "live" && (
+          <button
+            type="button"
+            onClick={captureSelfie}
+            className="absolute right-10 top-1/2 z-20 flex -translate-y-1/2 items-center gap-4 text-[12px] font-semibold uppercase tracking-[-0.02em] transition-opacity hover:opacity-70"
+          >
+            TAKE PICTURE
+            <span className="grid h-12 w-12 place-items-center rounded-full border border-white">
+              <CameraIcon className="h-7 w-7 text-white" />
+            </span>
+          </button>
+        )}
+
+        <div className="absolute bottom-24 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-6">
+          <CameraGuidanceCopy tone="light" />
+        </div>
+
+        <BottomNav
+          onBack={handleBack}
+          onProceed={stage === "captured" ? analyzeSelfie : undefined}
+          showBack
+          showProceed={stage === "captured"}
+          proceedLabel="PROCEED"
+          className="text-white"
+        />
+
+        <canvas ref={canvasRef} className="hidden" />
+      </div>
+    );
+  }
 
   return (
     <PageShell contentClassName="min-h-screen px-7 pt-24 md:px-8">
@@ -149,107 +309,62 @@ export default function CameraPage() {
         </div>
 
         <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center">
-          <RotatingDiamond size="lg">
-            <p className="skinstric-muted-label mb-4">TAKE A SELFIE</p>
+          <div className="relative grid h-105 w-105 place-items-center">
+            <span className="diamond-frame rotate-slow w-105" />
+            <span className="diamond-frame rotate-medium w-90" />
+            <span className="diamond-frame rotate-fast w-75" />
 
-            <h1 className="skinstric-section-title">
-              Capture
-              <br />
-              image
-            </h1>
-
-            <div className="mt-10 flex flex-col items-center gap-5">
-              <div className="relative grid h-48 w-48 place-items-center overflow-hidden rounded-full border border-[#d8d8d8] bg-[#f1f1f1] md:h-56 md:w-56">
-                {capturedPreview ? (
-                  <div
-                    aria-label="Captured selfie preview"
-                    className="h-full w-full bg-cover bg-center grayscale"
-                    style={{ backgroundImage: `url(${capturedPreview})` }}
-                  />
-                ) : (
-                  <video
-                    ref={videoRef}
-                    muted
-                    playsInline
-                    className={[
-                      "h-full w-full scale-x-[-1] object-cover grayscale",
-                      isCameraActive ? "block" : "hidden",
-                    ].join(" ")}
-                  />
-                )}
-
-                {!isCameraActive && !capturedPreview && (
-                  <p className="px-8 text-center text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-[#7c7c7c]">
-                    Camera preview
-                  </p>
-                )}
+            <div className="relative z-10 grid place-items-center">
+              <div className="grid h-28 w-28 place-items-center rounded-full border border-[#1a1a1a]">
+                <CameraIcon className="h-20 w-20 text-[#1a1a1a]" />
               </div>
 
-              <canvas ref={canvasRef} className="hidden" />
+              <div className="absolute left-19 top-10 h-px w-28 rotate-[-38deg] bg-[#1a1a1a]" />
 
-              <div className="flex flex-col items-center gap-4 sm:flex-row">
-                {!isCameraActive && !capturedPreview && (
-                  <button
-                    type="button"
-                    onClick={startCamera}
-                    disabled={isAnalyzing}
-                    className="text-[11px] font-semibold uppercase tracking-[-0.02em] underline underline-offset-4 transition-opacity hover:opacity-60 disabled:opacity-40"
-                  >
-                    Start camera
-                  </button>
-                )}
-
-                {isCameraActive && (
-                  <button
-                    type="button"
-                    onClick={captureSelfie}
-                    disabled={isAnalyzing}
-                    className="text-[11px] font-semibold uppercase tracking-[-0.02em] underline underline-offset-4 transition-opacity hover:opacity-60 disabled:opacity-40"
-                  >
-                    Capture selfie
-                  </button>
-                )}
-
-                {capturedPreview && (
-                  <button
-                    type="button"
-                    onClick={startCamera}
-                    disabled={isAnalyzing}
-                    className="text-[11px] font-semibold uppercase tracking-[-0.02em] underline underline-offset-4 transition-opacity hover:opacity-60 disabled:opacity-40"
-                  >
-                    Retake
-                  </button>
-                )}
-              </div>
-
-              {errorMessage && (
-                <p className="max-w-90 text-center text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-red-600">
-                  {errorMessage}
-                </p>
-              )}
-
-              {isAnalyzing && (
-                <p className="skinstric-muted-label">Analyzing selfie...</p>
-              )}
-
-              {capturedPreview && (
-                <DiamondButton
-                  label={isAnalyzing ? "ANALYZING" : "ANALYZE"}
-                  onClick={analyzeSelfie}
-                  direction="right"
-                  disabled={isAnalyzing}
-                />
-              )}
+              <p className="absolute left-38.75 top-17.5 w-44 text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em]">
+                ALLOW A.I.
+                <br />
+                TO SCAN YOUR FACE
+              </p>
             </div>
-          </RotatingDiamond>
+          </div>
+
+          <div className="absolute left-[52%] top-1/2 z-30 w-77.5 -translate-y-1/2 bg-[#1a1a1a] text-white shadow-xl">
+            <p className="border-b border-white/30 px-5 py-5 text-[12px] font-semibold uppercase tracking-[-0.02em]">
+              ALLOW A.I. TO ACCESS YOUR CAMERA
+            </p>
+
+            <div className="flex justify-end gap-8 px-5 py-3">
+              <button
+                type="button"
+                onClick={() => router.push(ROUTES.select)}
+                className="text-[11px] font-semibold uppercase tracking-[-0.02em] text-white/70 transition-opacity hover:opacity-70"
+              >
+                DENY
+              </button>
+
+              <button
+                type="button"
+                onClick={startCamera}
+                className="text-[11px] font-semibold uppercase tracking-[-0.02em] text-white transition-opacity hover:opacity-70"
+              >
+                ALLOW
+              </button>
+            </div>
+          </div>
         </div>
+
+        {errorMessage && (
+          <p className="absolute bottom-28 left-1/2 max-w-md -translate-x-1/2 text-center text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-red-600">
+            {errorMessage}
+          </p>
+        )}
       </section>
 
-      <BottomNav
-        backHref={ROUTES.select}
-        showBack
-        showProceed={false}
-      />
+      <BottomNav onBack={handleBack} showBack showProceed={false} />
+
+      <canvas ref={canvasRef} className="hidden" />
+      <video ref={videoRef} muted playsInline className="hidden" />
     </PageShell>
   );
 }
