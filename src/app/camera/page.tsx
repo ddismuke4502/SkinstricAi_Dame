@@ -177,7 +177,7 @@ export default function CameraPage() {
       saveDemographicsData(response.data);
       saveActualSelections(getInitialActualSelections(response.data));
 
-      router.push(ROUTES.demographics);
+      router.push(ROUTES.analysis);
     } catch (error) {
       const message =
         error instanceof Error

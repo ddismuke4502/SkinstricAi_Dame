@@ -4,6 +4,7 @@ export const ROUTES = {
   select: "/select",
   upload: "/upload",
   camera: "/camera",
+  analysis: "/analysis",
   demographics: "/demographics",
 } as const;
 
