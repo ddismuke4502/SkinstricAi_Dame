@@ -16,7 +16,7 @@ export function PageShell({
   className = "",
   contentClassName = "",
   showIntro = true,
-  showEnterCode = true,
+  showEnterCode = false,
   sectionLabel = "INTRO",
   headerTone = "dark",
 }: PageShellProps) {

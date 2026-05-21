@@ -45,7 +45,10 @@ function SideDiamondGroup({
 
 export default function Home() {
   return (
-    <PageShell contentClassName="flex min-h-screen items-center justify-center px-6 pt-0">
+    <PageShell
+      showEnterCode={true}
+      contentClassName="flex min-h-screen items-center justify-center px-6 pt-0"
+    >
       <section className="relative flex min-h-screen w-full items-center justify-center">
         <SideDiamondGroup
           side="left"

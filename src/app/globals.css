@@ -295,6 +295,22 @@ a {
   color: #ffffff;
 }
 
+.skinstric-enter-code-button {
+  background: #111111;
+  color: #ffffff;
+  padding: 12px 20px;
+  font-size: 10px;
+  font-weight: 600;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  transition: opacity 200ms ease;
+}
+
+.skinstric-enter-code-button:hover {
+  opacity: 0.8;
+}
+
 @media (max-width: 768px) {
   .skinstric-testing-input {
     width: min(86vw, 420px);
