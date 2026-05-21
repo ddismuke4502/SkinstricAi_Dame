@@ -16,16 +16,16 @@ function AccessOption({ href, type }: AccessOptionProps) {
     <Link
       href={href}
       className={[
-        "group relative grid h-80 w-[320px] place-items-center md:h-105 md:w-105",
+        "skinstric-access-option skinstric-fade-in-up group",
         isCamera ? "lg:-translate-x-8" : "lg:translate-x-8",
       ].join(" ")}
     >
-      <span className="diamond-frame rotate-slow w-[320px] opacity-80 md:w-105" />
-      <span className="diamond-frame rotate-medium w-70 opacity-80 md:w-90" />
-      <span className="diamond-frame rotate-fast w-60 opacity-80 md:w-75" />
+      <span className="diamond-frame rotate-slow w-65 md:w-[320px] lg:w-105" />
+      <span className="diamond-frame rotate-medium w-55 md:w-70 lg:w-90" />
+      <span className="diamond-frame rotate-fast w-45 md:w-60 lg:w-75" />
 
       <div className="relative z-10 grid place-items-center">
-        <div className="grid h-24 w-24 place-items-center rounded-full border border-[#1a1a1a] transition-transform duration-300 group-hover:scale-105 md:h-28 md:w-28">
+        <div className="skinstric-access-icon-shell">
           <Image
             src={
               isCamera
@@ -35,14 +35,19 @@ function AccessOption({ href, type }: AccessOptionProps) {
             alt=""
             width={96}
             height={96}
-            className="h-20 w-20 object-contain md:h-24 md:w-24"
+            className={[
+              "object-contain",
+              isCamera
+                ? "h-20 w-20 md:h-24 md:w-24"
+                : "h-18 w-18 opacity-60 md:h-22 md:w-22",
+            ].join(" ")}
             aria-hidden="true"
           />
         </div>
 
         <div
           className={[
-            "absolute hidden h-px w-24 bg-[#1a1a1a] md:block",
+            "skinstric-access-line hidden md:block",
             isCamera
               ? "left-17.5 top-8.75 rotate-[-38deg] md:left-20.5 md:top-9.5"
               : "right-17.5 top-21.25 rotate-[-38deg] md:right-20.5 md:top-23.5",
@@ -51,10 +56,10 @@ function AccessOption({ href, type }: AccessOptionProps) {
 
         <p
           className={[
-            "absolute w-40 text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-[#1a1a1a]",
+            "skinstric-access-label",
             isCamera
-              ? "left-33.75 top-16 text-left md:left-38.75 md:top-18"
-              : "right-33.75 top-28 text-right md:right-38.75 md:top-32",
+              ? "md:left-33.75 md:top-16 md:text-left lg:left-38.75 lg:top-18"
+              : "md:right-33.75 md:top-28 md:text-right lg:right-38.75 lg:top-32",
           ].join(" ")}
         >
           {isCamera ? (
@@ -80,12 +85,12 @@ export default function SelectPage() {
   return (
     <PageShell contentClassName="min-h-screen px-7 pt-24 md:px-8">
       <section className="relative min-h-[calc(100vh-6rem)]">
-        <div className="absolute left-0 top-0">
+        <div className="absolute left-0 top-0 z-20">
           <p className="skinstric-label">TO START ANALYSIS</p>
         </div>
 
         <div className="flex min-h-[calc(100vh-6rem)] items-center justify-center">
-          <div className="grid w-full max-w-6xl place-items-center gap-10 lg:grid-cols-2 lg:gap-24">
+          <div className="skinstric-access-grid">
             <AccessOption href={ROUTES.camera} type="camera" />
             <AccessOption href={ROUTES.upload} type="gallery" />
           </div>
