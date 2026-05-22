@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
+import gsap from "gsap";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/layout/BottomNav";
 import PageShell from "@/components/layout/PageShell";
@@ -52,6 +53,12 @@ export default function CameraPage() {
   const videoRef = useRef<HTMLVideoElement | null>(null);
   const canvasRef = useRef<HTMLCanvasElement | null>(null);
   const streamRef = useRef<MediaStream | null>(null);
+
+  const transitionContentRef = useRef<HTMLDivElement | null>(null);
+  const cameraScreenRef = useRef<HTMLDivElement | null>(null);
+  const captureButtonRef = useRef<HTMLButtonElement | null>(null);
+  const capturedMessageRef = useRef<HTMLParagraphElement | null>(null);
+  const cameraGuidanceRef = useRef<HTMLDivElement | null>(null);
 
   const [stage, setStage] = useState<CameraStage>("permission");
   const [capturedPreview, setCapturedPreview] = useState("");
@@ -123,6 +130,105 @@ export default function CameraPage() {
       setErrorMessage("Unable to start the camera preview. Please try again.");
       setStage("permission");
     });
+  }, [stage]);
+
+  useEffect(() => {
+    const ctx = gsap.context(() => {
+      if (
+        (stage === "settingUp" || stage === "analyzing") &&
+        transitionContentRef.current
+      ) {
+        gsap.fromTo(
+          transitionContentRef.current,
+          {
+            autoAlpha: 0,
+            scale: 0.96,
+            y: 14,
+          },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.75,
+            ease: "power3.out",
+          },
+        );
+      }
+
+      if (stage === "live") {
+        const liveItems = [
+          cameraScreenRef.current,
+          captureButtonRef.current,
+          cameraGuidanceRef.current,
+        ].filter(Boolean);
+
+        gsap.fromTo(
+          liveItems,
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.75,
+            stagger: 0.12,
+            ease: "power2.out",
+          },
+        );
+
+        if (captureButtonRef.current) {
+          gsap.fromTo(
+            captureButtonRef.current,
+            {
+              x: 18,
+            },
+            {
+              x: 0,
+              duration: 0.75,
+              ease: "power3.out",
+            },
+          );
+        }
+      }
+
+      if (stage === "captured") {
+        const capturedItems = [
+          cameraScreenRef.current,
+          capturedMessageRef.current,
+          cameraGuidanceRef.current,
+        ].filter(Boolean);
+
+        gsap.fromTo(
+          capturedItems,
+          {
+            autoAlpha: 0,
+          },
+          {
+            autoAlpha: 1,
+            duration: 0.75,
+            stagger: 0.1,
+            ease: "power2.out",
+          },
+        );
+
+        if (capturedMessageRef.current) {
+          gsap.fromTo(
+            capturedMessageRef.current,
+            {
+              y: -10,
+              scale: 0.96,
+            },
+            {
+              y: 0,
+              scale: 1,
+              duration: 0.75,
+              ease: "power3.out",
+            },
+          );
+        }
+      }
+    });
+
+    return () => ctx.revert();
   }, [stage]);
 
   function captureSelfie() {
@@ -215,7 +321,7 @@ export default function CameraPage() {
   if (stage === "settingUp" || stage === "analyzing") {
     return (
       <PageShell contentClassName="flex min-h-screen items-center justify-center px-7 pt-0 md:px-8">
-        <div className="flex flex-col items-center">
+        <div ref={transitionContentRef} className="flex flex-col items-center">
           <RotatingDiamond size="md">
             <div className="mb-6 grid h-24 w-24 place-items-center rounded-full border border-[#1a1a1a]">
               <CameraIcon className="h-16 w-16 text-[#1a1a1a]" />
@@ -236,7 +342,10 @@ export default function CameraPage() {
 
   if (stage === "live" || stage === "captured") {
     return (
-      <div className="relative min-h-screen overflow-hidden bg-[#d6d8d5] text-white">
+      <div
+        ref={cameraScreenRef}
+        className="relative min-h-screen overflow-hidden bg-[#d6d8d5] text-white"
+      >
         {stage === "live" ? (
           <video
             ref={videoRef}
@@ -265,13 +374,17 @@ export default function CameraPage() {
         </header>
 
         {stage === "captured" && (
-          <p className="absolute left-1/2 top-[23%] z-20 -translate-x-1/2 text-[12px] font-semibold uppercase tracking-[-0.02em]">
+          <p
+            ref={capturedMessageRef}
+            className="absolute left-1/2 top-[23%] z-20 -translate-x-1/2 text-[12px] font-semibold uppercase tracking-[-0.02em]"
+          >
             GREAT SHOT!
           </p>
         )}
 
         {stage === "live" && (
           <button
+            ref={captureButtonRef}
             type="button"
             onClick={captureSelfie}
             className="absolute right-10 top-1/2 z-20 flex -translate-y-1/2 items-center gap-4 text-[12px] font-semibold uppercase tracking-[-0.02em] transition-opacity hover:opacity-70"
@@ -283,7 +396,10 @@ export default function CameraPage() {
           </button>
         )}
 
-        <div className="absolute bottom-24 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-6">
+        <div
+          ref={cameraGuidanceRef}
+          className="absolute bottom-24 left-1/2 z-20 w-full max-w-3xl -translate-x-1/2 px-6"
+        >
           <CameraGuidanceCopy tone="light" />
         </div>
 

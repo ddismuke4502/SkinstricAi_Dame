@@ -19,8 +19,8 @@ export default function UploadPage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement | null>(null);
 
-const previewContentRef = useRef<HTMLDivElement | null>(null);
-const analyzingContentRef = useRef<HTMLDivElement | null>(null);
+  const previewContentRef = useRef<HTMLDivElement | null>(null);
+  const analyzingContentRef = useRef<HTMLDivElement | null>(null);
 
   const [stage, setStage] = useState<UploadStage>("permission");
   const [previewUrl, setPreviewUrl] = useState("");
@@ -29,48 +29,50 @@ const analyzingContentRef = useRef<HTMLDivElement | null>(null);
   const [errorMessage, setErrorMessage] = useState("");
 
   useEffect(() => {
-  const previewContent = previewContentRef.current;
-  const analyzingContent = analyzingContentRef.current;
+    const previewContent = previewContentRef.current;
+    const analyzingContent = analyzingContentRef.current;
 
-  const ctx = gsap.context(() => {
-    if (stage === "preview" && previewContent) {
-      const previewItems = previewContent.querySelectorAll("[data-upload-reveal]");
+    const ctx = gsap.context(() => {
+      if (stage === "preview" && previewContent) {
+        const previewItems = previewContent.querySelectorAll(
+          "[data-upload-reveal]",
+        );
 
-      gsap.set(previewItems, {
-        autoAlpha: 0,
-        y: 14,
-      });
-
-      gsap.to(previewItems, {
-        autoAlpha: 1,
-        y: 0,
-        duration: 0.55,
-        stagger: 0.08,
-        ease: "power3.out",
-      });
-    }
-
-    if (stage === "analyzing" && analyzingContent) {
-      gsap.fromTo(
-        analyzingContent,
-        {
+        gsap.set(previewItems, {
           autoAlpha: 0,
-          scale: 0.96,
-          y: 12,
-        },
-        {
-          autoAlpha: 1,
-          scale: 1,
-          y: 0,
-          duration: 0.75,
-          ease: "power3.out",
-        }
-      );
-    }
-  });
+          y: 14,
+        });
 
-  return () => ctx.revert();
-}, [stage]);
+        gsap.to(previewItems, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.55,
+          stagger: 0.08,
+          ease: "power3.out",
+        });
+      }
+
+      if (stage === "analyzing" && analyzingContent) {
+        gsap.fromTo(
+          analyzingContent,
+          {
+            autoAlpha: 0,
+            scale: 0.96,
+            y: 12,
+          },
+          {
+            autoAlpha: 1,
+            scale: 1,
+            y: 0,
+            duration: 0.75,
+            ease: "power3.out",
+          },
+        );
+      }
+    });
+
+    return () => ctx.revert();
+  }, [stage]);
 
   async function handleFileChange(event: ChangeEvent<HTMLInputElement>) {
     const file = event.target.files?.[0];
@@ -142,18 +144,18 @@ const analyzingContentRef = useRef<HTMLDivElement | null>(null);
   }
 
   if (stage === "analyzing") {
-  return (
-    <PageShell contentClassName="flex min-h-screen items-center justify-center px-7 pt-0 md:px-8">
-      <div ref={analyzingContentRef}>
-        <RotatingDiamond size="md">
-          <p className="text-[13px] font-semibold uppercase tracking-[-0.02em]">
-            PREPARING YOUR ANALYSIS ...
-          </p>
-        </RotatingDiamond>
-      </div>
-    </PageShell>
-  );
-}
+    return (
+      <PageShell contentClassName="flex min-h-screen items-center justify-center px-7 pt-0 md:px-8">
+        <div ref={analyzingContentRef}>
+          <RotatingDiamond size="md">
+            <p className="text-[13px] font-semibold uppercase tracking-[-0.02em]">
+              PREPARING YOUR ANALYSIS ...
+            </p>
+          </RotatingDiamond>
+        </div>
+      </PageShell>
+    );
+  }
 
   if (stage === "preview") {
     return (
@@ -174,26 +176,27 @@ const analyzingContentRef = useRef<HTMLDivElement | null>(null);
               </h1>
 
               <div
-  ref={previewContentRef}
-  className="mt-10 flex flex-col items-center gap-5"
->
+                ref={previewContentRef}
+                className="mt-10 flex flex-col items-center gap-5"
+              >
                 <div
-  data-upload-reveal
-  aria-label="Selected image preview"
+                  data-upload-reveal
+                  aria-label="Selected image preview"
                   className="h-40 w-40 rounded-full border border-[#1a1a1a] bg-cover bg-center grayscale md:h-48 md:w-48"
                   style={{ backgroundImage: `url(${previewUrl})` }}
                 />
 
                 <p
-                data-upload-reveal 
-                className="max-w-65 truncate text-center text-[11px] font-semibold uppercase tracking-[-0.02em] text-[#7c7c7c]">
+                  data-upload-reveal
+                  className="max-w-65 truncate text-center text-[11px] font-semibold uppercase tracking-[-0.02em] text-[#7c7c7c]"
+                >
                   {fileName}
                 </p>
 
                 <div
-  data-upload-reveal
-  className="flex flex-col items-center gap-4 sm:flex-row"
->
+                  data-upload-reveal
+                  className="flex flex-col items-center gap-4 sm:flex-row"
+                >
                   <button
                     type="button"
                     onClick={() => fileInputRef.current?.click()}
@@ -212,7 +215,10 @@ const analyzingContentRef = useRef<HTMLDivElement | null>(null);
                 </div>
 
                 {errorMessage && (
-                  <p data-upload-reveal className="max-w-85 text-center text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-red-600">
+                  <p
+                    data-upload-reveal
+                    className="max-w-85 text-center text-[11px] font-semibold uppercase leading-snug tracking-[-0.02em] text-red-600"
+                  >
                     {errorMessage}
                   </p>
                 )}
