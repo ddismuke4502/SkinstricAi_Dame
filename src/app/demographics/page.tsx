@@ -1,6 +1,7 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
+import gsap from "gsap";
 import { useRouter } from "next/navigation";
 import BottomNav from "@/components/layout/BottomNav";
 import PageShell from "@/components/layout/PageShell";
@@ -69,11 +70,20 @@ function SidebarSelection({
   );
 }
 
-function ConfidenceCircle({ percentage }: { percentage: string }) {
+function ConfidenceCircle({
+  percentage,
+  circleRef,
+}: {
+  percentage: string;
+  circleRef?: React.Ref<HTMLDivElement>;
+}) {
   const cleanPercentage = percentage.replace("%", "");
 
   return (
-    <div className="skinstric-confidence-circle relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-77.5 md:w-77.5">
+    <div
+      ref={circleRef}
+      className="skinstric-confidence-circle relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-77.5 md:w-77.5"
+    >
       <p className="skinstric-confidence-value text-[46px] font-normal leading-none tracking-[-0.07em] md:text-[54px]">
         {cleanPercentage}
         <span className="align-super text-[20px] tracking-normal md:text-[24px]">
@@ -144,6 +154,13 @@ function ActionButton({
 export default function DemographicsPage() {
   const router = useRouter();
 
+  const titleRef = useRef<HTMLDivElement | null>(null);
+  const sidebarRef = useRef<HTMLElement | null>(null);
+  const centerPanelRef = useRef<HTMLElement | null>(null);
+  const circleRef = useRef<HTMLDivElement | null>(null);
+  const confidenceListRef = useRef<HTMLElement | null>(null);
+  const actionsRef = useRef<HTMLDivElement | null>(null);
+
   const [hasLoadedStorage, setHasLoadedStorage] = useState(false);
   const [data, setData] = useState<DemographicData | null>(null);
   const [selectedCategory, setSelectedCategory] =
@@ -168,6 +185,129 @@ export default function DemographicsPage() {
     setHasLoadedStorage(true);
   }, []);
   /* eslint-enable react-hooks/set-state-in-effect */
+
+  useEffect(() => {
+    if (!hasLoadedStorage || !data) return;
+
+    const title = titleRef.current;
+    const sidebar = sidebarRef.current;
+    const centerPanel = centerPanelRef.current;
+    const circle = circleRef.current;
+    const confidenceList = confidenceListRef.current;
+    const actions = actionsRef.current;
+
+    if (
+      !title ||
+      !sidebar ||
+      !centerPanel ||
+      !circle ||
+      !confidenceList ||
+      !actions
+    ) {
+      return;
+    }
+
+    const sidebarCards = Array.from(sidebar.querySelectorAll("button"));
+    const confidenceRows = Array.from(
+      confidenceList.querySelectorAll("button"),
+    );
+
+    const ctx = gsap.context(() => {
+      gsap.set(title, {
+        autoAlpha: 0,
+        y: 16,
+      });
+
+      gsap.set(sidebarCards, {
+        autoAlpha: 0,
+        x: -18,
+      });
+
+      gsap.set(centerPanel, {
+        autoAlpha: 0,
+        y: 18,
+        scale: 0.985,
+      });
+
+      gsap.set(circle, {
+        autoAlpha: 0,
+        scale: 0.84,
+      });
+
+      gsap.set(confidenceRows, {
+        autoAlpha: 0,
+        x: 18,
+      });
+
+      gsap.set(actions, {
+        autoAlpha: 0,
+        y: 10,
+      });
+
+      const timeline = gsap.timeline({
+        defaults: {
+          ease: "power3.out",
+        },
+      });
+
+      timeline
+        .to(title, {
+          autoAlpha: 1,
+          y: 0,
+          duration: 0.55,
+        })
+        .to(
+          sidebarCards,
+          {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.5,
+            stagger: 0.08,
+          },
+          0.15,
+        )
+        .to(
+          centerPanel,
+          {
+            autoAlpha: 1,
+            y: 0,
+            scale: 1,
+            duration: 0.65,
+          },
+          0.22,
+        )
+        .to(
+          circle,
+          {
+            autoAlpha: 1,
+            scale: 1,
+            duration: 0.75,
+          },
+          0.38,
+        )
+        .to(
+          confidenceRows,
+          {
+            autoAlpha: 1,
+            x: 0,
+            duration: 0.45,
+            stagger: 0.045,
+          },
+          0.45,
+        )
+        .to(
+          actions,
+          {
+            autoAlpha: 1,
+            y: 0,
+            duration: 0.45,
+          },
+          0.7,
+        );
+    });
+
+    return () => ctx.revert();
+  }, [data, hasLoadedStorage]);
 
   const scores = useMemo(() => {
     if (!data) return [];
@@ -260,7 +400,7 @@ export default function DemographicsPage() {
       contentClassName="min-h-screen px-4 pt-[88px] md:px-8"
     >
       <section className="skinstric-content-enter skinstric-demographics-shell">
-        <div className="mb-8 md:mb-14.5">
+        <div ref={titleRef} className="mb-8 md:mb-[58px]">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 
           <h1 className="skinstric-mobile-page-title mt-3 font-normal uppercase md:text-[clamp(54px,5.8vw,72px)]">
@@ -273,7 +413,7 @@ export default function DemographicsPage() {
         </div>
 
         <div className="skinstric-demographics-grid">
-          <aside className="skinstric-demographics-sidebar">
+          <aside ref={sidebarRef} className="skinstric-demographics-sidebar">
             {DEMOGRAPHIC_CATEGORIES.map((category) => (
               <SidebarSelection
                 key={category}
@@ -285,18 +425,24 @@ export default function DemographicsPage() {
             ))}
           </aside>
 
-          <main className="skinstric-demographics-main">
+          <main ref={centerPanelRef} className="skinstric-demographics-main">
             <h2 className="skinstric-demographics-main-title text-[32px] font-normal leading-none tracking-[-0.07em] md:text-[40px]">
               {formatDemographicLabel(selectedScore.label)}
               {selectedCategory === "age" ? " y.o." : ""}
             </h2>
 
             <div className="flex min-h-70 items-center justify-center md:min-h-92.5">
-              <ConfidenceCircle percentage={selectedScore.percentage} />
+              <ConfidenceCircle
+                percentage={selectedScore.percentage}
+                circleRef={circleRef}
+              />
             </div>
           </main>
 
-          <aside className="skinstric-demographics-list">
+          <aside
+            ref={confidenceListRef}
+            className="skinstric-demographics-list"
+          >
             <div className="grid grid-cols-[1fr_auto] px-4 py-4">
               <p className="text-[14px] font-normal uppercase tracking-[-0.03em]">
                 {CATEGORY_DISPLAY[selectedCategory] === "SEX"
@@ -331,7 +477,10 @@ export default function DemographicsPage() {
 
       <BottomNav backHref={ROUTES.analysis} showBack showProceed={false} />
 
-      <div className="skinstric-demographics-actions fixed bottom-8 right-8 z-50 flex items-center gap-3">
+      <div
+        ref={actionsRef}
+        className="skinstric-demographics-actions fixed bottom-8 right-8 z-50 flex items-center gap-3"
+      >
         <ActionButton label="RESET" onClick={handleReset} />
         <ActionButton label="CONFIRM" variant="dark" onClick={handleConfirm} />
       </div>
