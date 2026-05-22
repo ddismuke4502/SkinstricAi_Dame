@@ -400,7 +400,7 @@ export default function DemographicsPage() {
       contentClassName="min-h-screen px-4 pt-[88px] md:px-8"
     >
       <section className="skinstric-content-enter skinstric-demographics-shell">
-        <div ref={titleRef} className="mb-8 md:mb-[58px]">
+        <div ref={titleRef} className="mb-8 md:mb-14.5">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 
           <h1 className="skinstric-mobile-page-title mt-3 font-normal uppercase md:text-[clamp(54px,5.8vw,72px)]">
