@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, type Ref } from "react";
+import gsap from "gsap";
 import BottomNav from "@/components/layout/BottomNav";
 import PageShell from "@/components/layout/PageShell";
 import DiamondButton from "@/components/ui/DiamondButton";
@@ -12,29 +13,27 @@ function SideDiamondGroup({
   side,
   label,
   href,
-  hoverTarget,
+  ctaRef,
   onHoverChange,
 }: {
   side: "left" | "right";
   label: string;
   href: string;
-  hoverTarget: HoverTarget;
+  ctaRef?: Ref<HTMLDivElement>;
   onHoverChange: (target: HoverTarget) => void;
 }) {
   const isLeft = side === "left";
-  const shouldFade =
-    (hoverTarget === "left" && !isLeft) || (hoverTarget === "right" && isLeft);
 
   return (
     <div
+      ref={ctaRef}
       onMouseEnter={() => onHoverChange(side)}
       onMouseLeave={() => onHoverChange(null)}
       onFocus={() => onHoverChange(side)}
       onBlur={() => onHoverChange(null)}
       className={[
-        "absolute top-1/2 hidden -translate-y-1/2 items-center transition-all duration-700 ease-out xl:flex",
+        "absolute top-1/2 hidden -translate-y-1/2 items-center xl:flex",
         isLeft ? "-left-65" : "-right-65",
-        shouldFade ? "pointer-events-none opacity-0" : "opacity-100",
       ].join(" ")}
     >
       <div className="relative grid h-130 w-130 place-items-center">
@@ -60,21 +59,170 @@ function SideDiamondGroup({
 }
 
 export default function Home() {
-  const [hoverTarget, setHoverTarget] = useState<HoverTarget>(null);
+  const heroRef = useRef<HTMLDivElement | null>(null);
+  const skincareLineRef = useRef<HTMLSpanElement | null>(null);
+  const leftCtaRef = useRef<HTMLDivElement | null>(null);
+  const rightCtaRef = useRef<HTMLDivElement | null>(null);
 
-  const heroSlideClass =
-    hoverTarget === "right"
-      ? "-translate-x-[29vw]"
-      : hoverTarget === "left"
-        ? "translate-x-[29vw]"
-        : "translate-x-0";
+  function animateHero(target: HoverTarget) {
+    const hero = heroRef.current;
+    const skincareLine = skincareLineRef.current;
+    const leftCta = leftCtaRef.current;
+    const rightCta = rightCtaRef.current;
 
-  const skincareLineClass =
-    hoverTarget === "right"
-      ? "translate-x-0"
-      : hoverTarget === "left"
-        ? "translate-x-[1.65em]"
-        : "translate-x-[1.09em]";
+    if (!hero || !skincareLine || !leftCta || !rightCta) return;
+
+    const timeline = gsap.timeline({
+      defaults: {
+        duration: 1.15,
+        ease: "power3.out",
+      },
+    });
+
+    if (target === "right") {
+      timeline
+        .to(
+          hero,
+          {
+            x: "-29vw",
+          },
+          0
+        )
+        .to(
+          skincareLine,
+          {
+            x: "0em",
+          },
+          0
+        )
+        .to(
+          leftCta,
+          {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: 0.55,
+            ease: "power2.out",
+          },
+          0
+        )
+        .to(
+          rightCta,
+          {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+            duration: 0.55,
+            ease: "power2.out",
+          },
+          0
+        );
+
+      return;
+    }
+
+    if (target === "left") {
+      timeline
+        .to(
+          hero,
+          {
+            x: "29vw",
+          },
+          0
+        )
+        .to(
+          skincareLine,
+          {
+            x: "2.18em",
+          },
+          0
+        )
+        .to(
+          rightCta,
+          {
+            autoAlpha: 0,
+            pointerEvents: "none",
+            duration: 0.55,
+            ease: "power2.out",
+          },
+          0
+        )
+        .to(
+          leftCta,
+          {
+            autoAlpha: 1,
+            pointerEvents: "auto",
+            duration: 0.55,
+            ease: "power2.out",
+          },
+          0
+        );
+
+      return;
+    }
+
+    timeline
+      .to(
+        hero,
+        {
+          x: 0,
+        },
+        0
+      )
+      .to(
+        skincareLine,
+        {
+          x: "1.09em",
+        },
+        0
+      )
+      .to(
+        [leftCta, rightCta],
+        {
+          autoAlpha: 1,
+          pointerEvents: "auto",
+          duration: 0.65,
+          ease: "power2.out",
+        },
+        0
+      );
+  }
+
+  useEffect(() => {
+    const hero = heroRef.current;
+    const skincareLine = skincareLineRef.current;
+    const leftCta = leftCtaRef.current;
+    const rightCta = rightCtaRef.current;
+
+    if (!hero || !skincareLine || !leftCta || !rightCta) return;
+
+    gsap.set(hero, {
+      x: 0,
+      willChange: "transform",
+    });
+
+    gsap.set(skincareLine, {
+      x: "1.09em",
+      willChange: "transform",
+    });
+
+    gsap.set([leftCta, rightCta], {
+      autoAlpha: 1,
+      willChange: "opacity",
+    });
+
+    gsap.fromTo(
+      hero,
+      {
+        y: 18,
+        autoAlpha: 0,
+      },
+      {
+        y: 0,
+        autoAlpha: 1,
+        duration: 0.9,
+        ease: "power3.out",
+      }
+    );
+  }, []);
 
   return (
     <PageShell
@@ -86,24 +234,14 @@ export default function Home() {
           side="left"
           label="DISCOVER A.I."
           href={ROUTES.testing}
-          hoverTarget={hoverTarget}
-          onHoverChange={setHoverTarget}
+          ctaRef={leftCtaRef}
+          onHoverChange={animateHero}
         />
 
-        <div
-          className={[
-            "relative z-20 flex flex-col transition-transform duration-1400 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
-            heroSlideClass,
-          ].join(" ")}
-        >
+        <div ref={heroRef} className="relative z-20 flex flex-col">
           <h1 className="skinstric-hero-title w-fit text-left">
             <span className="block">Sophisticated</span>
-            <span
-              className={[
-                "block transition-transform duration-1400 ease-[cubic-bezier(0.22,1,0.36,1)] will-change-transform",
-                skincareLineClass,
-              ].join(" ")}
-            >
+            <span ref={skincareLineRef} className="block">
               skincare
             </span>
           </h1>
@@ -127,8 +265,8 @@ export default function Home() {
           side="right"
           label="TAKE TEST"
           href={ROUTES.testing}
-          hoverTarget={hoverTarget}
-          onHoverChange={setHoverTarget}
+          ctaRef={rightCtaRef}
+          onHoverChange={animateHero}
         />
 
         <p className="skinstric-body-copy absolute bottom-8 left-0 hidden max-w-82.5 text-left md:block">
