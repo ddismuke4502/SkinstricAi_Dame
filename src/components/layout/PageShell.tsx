@@ -21,7 +21,12 @@ export function PageShell({
   headerTone = "dark",
 }: PageShellProps) {
   return (
-    <div className={["skinstric-page relative overflow-hidden", className].join(" ")}>
+    <div
+      className={[
+        "skinstric-page skinstric-page-enter relative overflow-hidden",
+        className,
+      ].join(" ")}
+    >
       <AppHeader
         showIntro={showIntro}
         showEnterCode={showEnterCode}

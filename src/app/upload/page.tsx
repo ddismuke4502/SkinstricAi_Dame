@@ -216,7 +216,7 @@ export default function UploadPage() {
             </div>
           </div>
 
-          <div className="skinstric-permission-modal">
+          <div className="skinstric-permission-modal skinstric-fade-in-up">
             <p className="border-b border-white/30 px-5 py-5 text-[12px] font-semibold uppercase tracking-[-0.02em]">
               ALLOW A.I. TO ACCESS YOUR GALLERY
             </p>

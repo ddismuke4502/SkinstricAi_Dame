@@ -259,7 +259,7 @@ export default function DemographicsPage() {
       showEnterCode={false}
       contentClassName="min-h-screen px-4 pt-[88px] md:px-8"
     >
-      <section className="skinstric-demographics-shell">
+      <section className="skinstric-content-enter skinstric-demographics-shell">
         <div className="mb-8 md:mb-14.5">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 

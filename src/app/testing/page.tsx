@@ -126,7 +126,7 @@ export default function TestingPage() {
 
   return (
     <PageShell contentClassName="min-h-screen px-7 pt-24 md:px-8">
-      <section className="relative min-h-[calc(100vh-6rem)]">
+      <section className="skinstric-content-enter relative min-h-[calc(100vh-6rem)]">
         <h1 className="skinstric-label absolute left-0 top-0">
           TO START ANALYSIS
         </h1>

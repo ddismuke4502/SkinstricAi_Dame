@@ -81,7 +81,7 @@ export default function Home() {
       showEnterCode={true}
       contentClassName="flex min-h-screen items-center justify-center px-6 pt-0"
     >
-      <section className="relative flex min-h-screen w-full items-center justify-center">
+      <section className="skinstric-content-enter relative flex min-h-screen w-full items-center justify-center">
         <SideDiamondGroup
           side="left"
           label="DISCOVER A.I."

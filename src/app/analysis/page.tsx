@@ -43,7 +43,7 @@ export default function AnalysisPage() {
       showEnterCode={false}
       contentClassName="min-h-screen px-7 pt-24 md:px-8"
     >
-      <section className="relative min-h-[calc(100vh-6rem)]">
+      <section className="skinstric-content-enter relative min-h-[calc(100vh-6rem)]">
         <div className="absolute left-0 top-0 z-20">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 
