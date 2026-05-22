@@ -425,6 +425,112 @@ a {
   }
 }
 
+.skinstric-demographics-shell {
+  min-height: calc(100vh - 6rem);
+  padding-bottom: 128px;
+}
+
+.skinstric-demographics-grid {
+  display: grid;
+  width: 100%;
+  gap: 12px;
+}
+
+.skinstric-demographics-sidebar {
+  display: grid;
+  gap: 8px;
+}
+
+.skinstric-demographics-main {
+  min-height: 390px;
+  border-top: 2px solid #1a1a1a;
+  background: #f3f3f3;
+  padding: 24px 20px;
+}
+
+.skinstric-demographics-list {
+  border-top: 2px solid #1a1a1a;
+  background: #f3f3f3;
+}
+
+@media (min-width: 1024px) {
+  .skinstric-demographics-grid {
+    grid-template-columns: 180px minmax(0, 1fr) 360px;
+  }
+
+  .skinstric-demographics-sidebar {
+    display: block;
+  }
+
+  .skinstric-demographics-sidebar > * + * {
+    margin-top: 8px;
+  }
+
+  .skinstric-demographics-main {
+    min-height: 480px;
+  }
+}
+
+@media (max-width: 768px) {
+  .skinstric-demographics-shell {
+    padding-bottom: 156px;
+  }
+
+  .skinstric-demographics-grid {
+    gap: 14px;
+  }
+
+  .skinstric-demographics-sidebar {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+
+  .skinstric-sidebar-card {
+    height: 92px;
+    padding: 14px 12px;
+  }
+
+  .skinstric-sidebar-card p:first-child {
+    font-size: 11px;
+    line-height: 1.1;
+  }
+
+  .skinstric-sidebar-card p:last-child {
+    margin-top: 26px;
+    font-size: 11px;
+  }
+
+  .skinstric-demographics-main {
+    min-height: 360px;
+    padding: 22px 18px;
+  }
+
+  .skinstric-demographics-main-title {
+    font-size: clamp(30px, 10vw, 42px);
+    line-height: 0.95;
+    letter-spacing: -0.07em;
+  }
+
+  .skinstric-confidence-circle {
+    height: min(68vw, 260px);
+    width: min(68vw, 260px);
+  }
+
+  .skinstric-confidence-value {
+    font-size: clamp(40px, 13vw, 54px);
+  }
+
+  .skinstric-demographics-actions {
+    right: 24px;
+    bottom: 28px;
+    gap: 10px;
+  }
+
+  .skinstric-action-button {
+    min-width: 86px;
+    padding: 12px 16px;
+  }
+}
+
 @keyframes skinstricFadeInUp {
   from {
     opacity: 0;
@@ -443,11 +549,12 @@ a {
   }
 
   .skinstric-mobile-page-title {
-    max-width: calc(100vw - 48px);
-    font-size: clamp(42px, 13vw, 64px);
+    max-width: 100%;
+    font-size: clamp(36px, 10.5vw, 44px);
     line-height: 0.9;
-    letter-spacing: -0.075em;
-    overflow-wrap: normal;
+    letter-spacing: -0.085em;
+    white-space: nowrap;
+    overflow: visible;
   }
 }
 

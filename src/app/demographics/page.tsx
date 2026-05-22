@@ -73,8 +73,8 @@ function ConfidenceCircle({ percentage }: { percentage: string }) {
   const cleanPercentage = percentage.replace("%", "");
 
   return (
-    <div className="relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-77.5 md:w-77.5">
-      <p className="text-[46px] font-normal leading-none tracking-[-0.07em] md:text-[54px]">
+    <div className="skinstric-confidence-circle relative grid h-64 w-64 place-items-center rounded-full border-[3px] border-[#1a1a1a] md:h-77.5 md:w-77.5">
+      <p className="skinstric-confidence-value text-[46px] font-normal leading-none tracking-[-0.07em] md:text-[54px]">
         {cleanPercentage}
         <span className="align-super text-[20px] tracking-normal md:text-[24px]">
           %
@@ -257,10 +257,10 @@ export default function DemographicsPage() {
     <PageShell
       sectionLabel="ANALYSIS"
       showEnterCode={false}
-      contentClassName="min-h-screen px-6 pt-[88px] md:px-8"
+      contentClassName="min-h-screen px-4 pt-[88px] md:px-8"
     >
-      <section className="min-h-[calc(100vh-6rem)] pb-32">
-        <div className="mb-14.5">
+      <section className="skinstric-demographics-shell">
+        <div className="mb-8 md:mb-14.5">
           <p className="skinstric-label">A. I. ANALYSIS</p>
 
           <h1 className="skinstric-mobile-page-title mt-3 font-normal uppercase md:text-[clamp(54px,5.8vw,72px)]">
@@ -272,8 +272,8 @@ export default function DemographicsPage() {
           </p>
         </div>
 
-        <div className="grid w-full gap-3 lg:grid-cols-[180px_minmax(0,1fr)_360px]">
-          <aside className="space-y-2">
+        <div className="skinstric-demographics-grid">
+          <aside className="skinstric-demographics-sidebar">
             {DEMOGRAPHIC_CATEGORIES.map((category) => (
               <SidebarSelection
                 key={category}
@@ -285,18 +285,18 @@ export default function DemographicsPage() {
             ))}
           </aside>
 
-          <main className="min-h-97.5 border-t-2 border-[#1a1a1a] bg-[#f3f3f3] px-5 py-6 md:min-h-120">
-            <h2 className="text-[32px] font-normal leading-none tracking-[-0.07em] md:text-[40px]">
+          <main className="skinstric-demographics-main">
+            <h2 className="skinstric-demographics-main-title text-[32px] font-normal leading-none tracking-[-0.07em] md:text-[40px]">
               {formatDemographicLabel(selectedScore.label)}
               {selectedCategory === "age" ? " y.o." : ""}
             </h2>
 
-            <div className="flex min-h-75 items-center justify-center md:min-h-92.5">
+            <div className="flex min-h-70 items-center justify-center md:min-h-92.5">
               <ConfidenceCircle percentage={selectedScore.percentage} />
             </div>
           </main>
 
-          <aside className="border-t-2 border-[#1a1a1a] bg-[#f3f3f3]">
+          <aside className="skinstric-demographics-list">
             <div className="grid grid-cols-[1fr_auto] px-4 py-4">
               <p className="text-[14px] font-normal uppercase tracking-[-0.03em]">
                 {CATEGORY_DISPLAY[selectedCategory] === "SEX"
@@ -331,7 +331,7 @@ export default function DemographicsPage() {
 
       <BottomNav backHref={ROUTES.analysis} showBack showProceed={false} />
 
-      <div className="fixed bottom-8 right-8 z-50 flex items-center gap-3">
+      <div className="skinstric-demographics-actions fixed bottom-8 right-8 z-50 flex items-center gap-3">
         <ActionButton label="RESET" onClick={handleReset} />
         <ActionButton label="CONFIRM" variant="dark" onClick={handleConfirm} />
       </div>
