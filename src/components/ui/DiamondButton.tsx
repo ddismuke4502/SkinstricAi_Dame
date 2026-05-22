@@ -12,6 +12,7 @@ type DiamondButtonProps = {
   direction?: "left" | "right";
   disabled?: boolean;
   className?: string;
+  ariaLabel?: string;
 };
 
 function DiamondIcon({ direction }: { direction: "left" | "right" }) {
@@ -60,6 +61,7 @@ export default function DiamondButton({
   direction = "right",
   disabled = false,
   className = "",
+  ariaLabel,
 }: DiamondButtonProps) {
   const rootRef = useRef<HTMLAnchorElement | HTMLButtonElement | null>(null);
 
@@ -131,6 +133,7 @@ export default function DiamondButton({
       <Link
         ref={rootRef as Ref<HTMLAnchorElement>}
         href={href}
+        aria-label={ariaLabel}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
         onFocus={handleMouseEnter}
@@ -147,6 +150,7 @@ export default function DiamondButton({
     <button
       ref={rootRef as Ref<HTMLButtonElement>}
       type="button"
+      aria-label={ariaLabel}
       disabled={disabled}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
