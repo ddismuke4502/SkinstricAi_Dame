@@ -321,6 +321,7 @@ a {
   top: 50%;
   z-index: 80;
   width: min(360px, calc(100vw - 32px));
+  max-width: calc(100vw - 32px);
   transform: translate(-50%, -50%);
   background: #1a1a1a;
   color: #ffffff;
@@ -531,6 +532,22 @@ a {
   }
 }
 
+.skinstric-permission-modal-enter {
+  animation: skinstricPermissionModalEnter 420ms ease-out both;
+}
+
+@keyframes skinstricPermissionModalEnter {
+  from {
+    opacity: 0;
+    transform: translate(-50%, -46%);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
 @keyframes skinstricFadeInUp {
   from {
     opacity: 0;
@@ -545,7 +562,11 @@ a {
 
 @media (max-width: 768px) {
   .skinstric-permission-modal {
-    width: min(320px, calc(100vw - 40px));
+    left: 50%;
+    right: auto;
+    width: calc(100vw - 48px);
+    max-width: 320px;
+    transform: translate(-50%, -50%);
   }
 
   .skinstric-mobile-page-title {
