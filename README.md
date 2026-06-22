@@ -1,5 +1,7 @@
 # SkinstricAi_Dame
 
+[![CI](https://github.com/ddismuke4502/SkinstricAi_Dame/actions/workflows/ci.yml/badge.svg)](https://github.com/ddismuke4502/SkinstricAi_Dame/actions/workflows/ci.yml)
+
 A Skinstric-inspired AI skincare analysis web app built with **Next.js**, **TypeScript**, **Tailwind CSS**, and **GSAP**. The project recreates a polished multi-step skincare analysis experience with image upload, camera capture, API-driven demographic analysis, responsive layouts, and animated UI transitions.
 
 **Live Demo:** https://skinstric-ai-dame.vercel.app/
